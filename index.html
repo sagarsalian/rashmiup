@@ -16,10 +16,13 @@
 
     <script type="text/babel">
     function ProductTable() {
+        // State to manage the maximized image
+        const [selectedImage, setSelectedImage] = React.useState(null);
+
         const products = [
-            { id: 1, desc: "Night Dress", amount: "1500 Rs", img: "https://via.placeholder.com/150", phone: "6361788920" },
-            { id: 2, desc: "Silk Scarf", amount: "800 Rs", img: "https://via.placeholder.com/150", phone: "6361788920" },
-            { id: 3, desc: "Cotton Tee", amount: "1200 Rs", img: "https://via.placeholder.com/150", phone: "6361788920" }
+            { id: 1, desc: "Night Dress", amount: "1500 Rs", img: "./images/night_dress_1.png", phone: "6361788920" },
+            { id: 2, desc: "Silk Scarf", amount: "800 Rs", img: "./images/silk_scraf_1.png", phone: "6361788920" },
+            { id: 3, desc: "Cotton Tee", amount: "1200 Rs", img: "./images/cotton_tee_1.png", phone: "6361788920" }
         ];
 
         const handleWhatsApp = (product) => {
@@ -32,7 +35,7 @@
             <div className="p-4 md:p-6 max-w-4xl mx-auto">
                 <h1 className="text-2xl font-bold mb-6 text-gray-800">Product List</h1>
                 
-                {/* --- DESKTOP VIEW (Hidden on small screens) --- */}
+                {/* --- DESKTOP VIEW --- */}
                 <div className="hidden md:block overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
                     <table className="w-full text-left bg-white">
                         <thead className="bg-gray-50 border-b border-gray-200">
@@ -47,7 +50,13 @@
                             {products.map((item) => (
                                 <tr key={item.id} className="hover:bg-gray-50 transition">
                                     <td className="px-6 py-4">
-                                        <img src={item.img} alt={item.desc} className="w-12 h-12 rounded-md object-cover shadow-sm" />
+                                        {/* Added cursor-pointer and onClick */}
+                                        <img 
+                                            src={item.img} 
+                                            alt={item.desc} 
+                                            onClick={() => setSelectedImage(item.img)}
+                                            className="w-12 h-12 rounded-md object-cover shadow-sm cursor-pointer hover:opacity-80 transition" 
+                                        />
                                     </td>
                                     <td className="px-6 py-4 font-medium text-gray-900">{item.desc}</td>
                                     <td className="px-6 py-4 text-gray-600">{item.amount}</td>
@@ -65,20 +74,24 @@
                     </table>
                 </div>
 
-                {/* --- MOBILE VIEW (Cards: Hidden on desktop) --- */}
+                {/* --- MOBILE VIEW --- */}
                 <div className="md:hidden space-y-4">
                     {products.map((item) => (
                         <div key={item.id} className="bg-white p-4 rounded-xl shadow-sm border border-gray-200 flex flex-col gap-4">
                             <div className="flex gap-4 items-center">
-                                {/* Bigger image for mobile */}
-                                <img src={item.img} alt={item.desc} className="w-24 h-24 rounded-lg object-cover bg-gray-100" />
+                                {/* Added cursor-pointer and onClick */}
+                                <img 
+                                    src={item.img} 
+                                    alt={item.desc} 
+                                    onClick={() => setSelectedImage(item.img)}
+                                    className="w-24 h-24 rounded-lg object-cover bg-gray-100 cursor-pointer hover:opacity-80 transition" 
+                                />
                                 <div>
                                     <h3 className="font-bold text-lg text-gray-900">{item.desc}</h3>
                                     <p className="text-gray-600 font-medium text-lg">{item.amount}</p>
                                 </div>
                             </div>
                             
-                            {/* Full width button for easier tapping */}
                             <button 
                                 onClick={() => handleWhatsApp(item)}
                                 className="w-full bg-green-500 active:bg-green-600 text-white py-3 rounded-lg font-bold transition shadow-sm flex items-center justify-center gap-2"
@@ -88,6 +101,30 @@
                         </div>
                     ))}
                 </div>
+
+                {/* --- IMAGE MODAL (LIGHTBOX) --- */}
+                {selectedImage && (
+                    <div 
+                        className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-90 p-4"
+                        onClick={() => setSelectedImage(null)} // Click background to close
+                    >
+                        {/* Close Button */}
+                        <button 
+                            onClick={() => setSelectedImage(null)}
+                            className="absolute top-5 right-5 text-white text-5xl font-bold hover:text-gray-300 transition"
+                        >
+                            &times;
+                        </button>
+
+                        {/* Maximized Image */}
+                        <img 
+                            src={selectedImage} 
+                            alt="Maximized" 
+                            className="max-w-full max-h-[90vh] object-contain rounded-lg shadow-2xl"
+                            onClick={(e) => e.stopPropagation()} // Prevent clicking image from closing
+                        />
+                    </div>
+                )}
 
             </div>
         );
