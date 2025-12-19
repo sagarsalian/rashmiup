@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>React + Tailwind (No Node)</title>
+    
+    <script src="https://cdn.tailwindcss.com"></script>
+
+    <script src="https://unpkg.com/react@18/umd/react.development.js"></script>
+    <script src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+
+    <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body class="bg-gray-100">
+
+    <div id="root"></div>
+
+    <script type="text/babel">
+    function ProductTable() {
+        const products = [
+            { id: 1, desc: "Night Dress", amount: "1500 Rs", img: "https://via.placeholder.com/80", phone: "919876543210" },
+            { id: 2, desc: "Silk Scarf", amount: "800 Rs", img: "https://via.placeholder.com/80", phone: "919876543210" },
+            { id: 3, desc: "Cotton Tee", amount: "1200 Rs", img: "https://via.placeholder.com/80", phone: "919876543210" }
+        ];
+
+        const handleWhatsApp = (product) => {
+            const message = `Hi, I want to buy the ${product.desc} for ${product.amount}.`;
+            const encodedMessage = encodeURIComponent(message);
+            // Format: https://wa.me/PhoneNumber?text=Message
+            window.open(`https://wa.me/${product.phone}?text=${encodedMessage}`, '_blank');
+        };
+
+        return (
+            <div className="p-6 max-w-4xl mx-auto">
+                <h1 className="text-2xl font-bold mb-6 text-gray-800">Product List</h1>
+                <div className="overflow-x-auto rounded-lg border border-gray-200 shadow-sm">
+                    <table className="w-full text-left bg-white">
+                        <thead className="bg-gray-50 border-b border-gray-200">
+                            <tr>
+                                <th className="px-6 py-4 font-semibold text-gray-700">Pic</th>
+                                <th className="px-6 py-4 font-semibold text-gray-700">Description</th>
+                                <th className="px-6 py-4 font-semibold text-gray-700">Amount</th>
+                                <th className="px-6 py-4 font-semibold text-gray-700 text-center">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody className="divide-y divide-gray-200">
+                            {products.map((item) => (
+                                <tr key={item.id} className="hover:bg-gray-50 transition">
+                                    <td className="px-6 py-4">
+                                        <img src={item.img} alt={item.desc} className="w-12 h-12 rounded-md object-cover shadow-sm" />
+                                    </td>
+                                    <td className="px-6 py-4 font-medium text-gray-900">{item.desc}</td>
+                                    <td className="px-6 py-4 text-gray-600">{item.amount}</td>
+                                    <td className="px-6 py-4 text-center">
+                                        <button 
+                                            onClick={() => handleWhatsApp(item)}
+                                            className="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-lg text-sm font-bold transition flex items-center justify-center mx-auto gap-2"
+                                        >
+                                            Purchase
+                                        </button>
+                                    </td>
+                                </tr>
+                            ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById('root'));
+    root.render(<ProductTable />);
+</script>
+</body>
+</html>
